@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iMac G3 Heaven - Classic Mac Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Lucida Grande", "Geneva", Verdana, Arial, sans-serif;
+            font-size: 11px;
+            background: linear-gradient(180deg, #ffeef7 0%, #ffe0f0 25%, #ffd1e9 50%, #ffc2e2 75%, #ffb3db 100%);
+            background-attachment: fixed;
+            color: #000;
+            cursor: default;
+        }
+
+        /* Classic Mac Window Chrome */
+        .window {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 3%, #eeeeee 97%, #dddddd 100%);
+            border: 1px solid #999;
+            border-top-color: #fff;
+            border-left-color: #fff;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 8px;
+        }
+
+        .window-title-bar {
+            background: linear-gradient(180deg, #ffcce6 0%, #ff99d6 50%, #ff66c7 100%);
+            border-bottom: 1px solid #cc0099;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-weight: bold;
+            color: #660033;
+            font-size: 12px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 2px;
+            margin-right: 8px;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            border: 1px solid #666;
+        }
+
+        .close-btn { background: linear-gradient(180deg, #ff6666, #ff3333); }
+        .minimize-btn { background: linear-gradient(180deg, #ffff66, #ffff33); }
+        .zoom-btn { background: linear-gradient(180deg, #66ff66, #33ff33); }
+
+        .window-content {
+            padding: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+        }
+
+        /* Classic Mac Buttons */
+        .mac-button {
+            background: linear-gradient(180deg, #ffffff 0%, #e6e6e6 50%, #cccccc 100%);
+            border: 1px solid #999;
+            border-top-color: #fff;
+            border-left-color: #fff;
+            border-right-color: #666;
+            border-bottom-color: #666;
+            padding: 6px 16px;
+            font-size: 11px;
+            font-family: inherit;
+            cursor: pointer;
+            margin: 2px;
+            color: #000;
+        }
+
+        .mac-button:hover {
+            background: linear-gradient(180deg, #ffccee 0%, #ff99dd 50%, #ff66cc 100%);
+        }
+
+        .mac-button:active {
+            background: linear-gradient(180deg, #cccccc 0%, #e6e6e6 50%, #ffffff 100%);
+            border-top-color: #666;
+            border-left-color: #666;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .mac-button.default {
+            background: linear-gradient(180deg, #cceeff 0%, #99ddff 50%, #66ccff 100%);
+            border-color: #0066cc;
+        }
+
+        /* Classic Tabs */
+        .tab-strip {
+            background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%);
+            border-bottom: 1px solid #999;
+            display: flex;
+            padding: 0 4px;
+        }
+
+        .tab {
+            background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
+            border: 1px solid #999;
+            border-bottom: none;
+            padding: 6px 12px;
+            margin-right: 2px;
+            cursor: pointer;
+            font-size: 11px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .tab.active {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+            border-bottom: 1px solid #ffffff;
+            margin-bottom: -1px;
+        }
+
+        .tab:hover:not(.active) {
+            background: linear-gradient(180deg, #ffddee 0%, #ffbbdd 100%);
+        }
+
+        /* Classic Mac Scrollbars */
+        .scrollable {
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px inset #ccc;
+            background: #fff;
+            padding: 8px;
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: linear-gradient(90deg, #e8e8e8, #f0f0f0, #e8e8e8);
+            border: 1px solid #999;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #d0d0d0, #e0e0e0, #d0d0d0);
+            border: 1px solid #999;
+            border-radius: 0;
+        }
+
+        .scrollable::-webkit-scrollbar-button {
+            background: linear-gradient(180deg, #f0f0f0, #d0d0d0);
+            border: 1px solid #999;
+            height: 16px;
+        }
+
+        /* Layout */
+        .desktop {
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 192, 230, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 230, 245, 0.3) 0%, transparent 50%);
+        }
+
+        .main-window {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-area {
+            display: flex;
+            gap: 12px;
+        }
+
+        .sidebar {
+            flex: 0 0 200px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        /* Classic Mac List */
+        .mac-list {
+            background: #fff;
+            border: 1px inset #ccc;
+            margin: 8px 0;
+        }
+
+        .mac-list-item {
+            padding: 4px 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .mac-list-item:hover {
+            background: linear-gradient(90deg, #cceeff, #aaddff);
+            color: #000;
+        }
+
+        .mac-list-item:active {
+            background: linear-gradient(90deg, #99ccff, #66aaff);
+        }
+
+        .mac-list-item::before {
+            content: "• ";
+            color: #ff66cc;
+            font-weight: bold;
+        }
+
+        /* Classic Groupbox */
+        .groupbox {
+            border: 1px inset #ccc;
+            margin: 8px 0;
+            padding: 12px;
+            background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
+        }
+
+        .groupbox-title {
+            background: linear-gradient(90deg, #ffffff, #ffeeee, #ffffff);
+            padding: 2px 8px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #660033;
+            margin: -18px 8px 8px 8px;
+            border: 1px solid #999;
+            display: inline-block;
+        }
+
+        /* Classic Progress Bar */
+        .progress-container {
+            background: #fff;
+            border: 1px inset #ccc;
+            height: 16px;
+            margin: 8px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff99dd, #ffaaee, #ff99dd);
+            background-size: 20px 100%;
+            animation: progress-animate 2s linear infinite;
+            width: 75%;
+        }
+
+        @keyframes progress-animate {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 0; }
+        }
+
+        /* Classic Icon Grid */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 80px);
+            gap: 16px;
+            padding: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+            border: 1px inset #ccc;
+        }
+
+        .icon-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 8px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .icon-item:hover {
+            background: linear-gradient(180deg, #cceeff 0%, #aaddff 100%);
+            border-color: #0066cc;
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ffccee, #ff99dd, #ff66cc);
+            border: 1px solid #cc0099;
+            border-radius: 8px;
+            margin: 0 auto 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #660033;
+            font-size: 8px;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .icon-label {
+            font-size: 10px;
+            color: #000;
+            word-wrap: break-word;
+        }
+
+        /* Color Swatches */
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px;
+            background: #fff;
+            border: 1px inset #ccc;
+            margin: 8px 0;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #999;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .color-swatch:hover {
+            border-color: #000;
+            transform: scale(1.1);
+        }
+
+        .bondi-blue { background: linear-gradient(135deg, #00a2ff, #0088cc); }
+        .strawberry { background: linear-gradient(135deg, #ff3366, #cc1144); }
+        .lime { background: linear-gradient(135deg, #99ff33, #77cc11); }
+        .tangerine { background: linear-gradient(135deg, #ff9933, #cc7711); }
+        .grape { background: linear-gradient(135deg, #9933ff, #7711cc); }
+        .blueberry { background: linear-gradient(135deg, #3366ff, #1144cc); }
+
+        /* Status Bar */
+        .status-bar {
+            background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%);
+            border-top: 1px solid #999;
+            padding: 4px 8px;
+            font-size: 10px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Classic Text Display */
+        .text-display {
+            background: #fff;
+            border: 1px inset #ccc;
+            padding: 12px;
+            font-family: "Monaco", "Courier New", monospace;
+            font-size: 10px;
+            line-height: 1.4;
+            margin: 8px 0;
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
+            border-bottom: 1px solid #999;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .menu-item {
+            display: inline-block;
+            padding: 4px 12px;
+            cursor: pointer;
+            margin-right: 2px;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(180deg, #cceeff 0%, #99ddff 100%);
+            color: #000;
+        }
+
+        /* Classic Alert Box */
+        .alert-box {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+            border: 2px outset #ccc;
+            padding: 16px;
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            border: 1px solid #cc6600;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #663300;
+            flex-shrink: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-area {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: none;
+            }
+            
+            .icon-grid {
+                grid-template-columns: repeat(auto-fill, 60px);
+                gap: 12px;
+            }
+            
+            .desktop {
+                padding: 10px;
+            }
+        }
+
+        /* Classic Loading Animation */
+        .loading-dots {
+            display: inline-block;
+            position: relative;
+        }
+
+        .loading-dots::after {
+            content: "...";
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+            100% { content: "."; }
+        }
+
+        /* Retro Animations */
+        @keyframes window-open {
+            0% {
+                transform: scale(0.1);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .window {
+            animation: window-open 0.3s ease-out;
+        }
+
+        /* Classic Hyperlinks */
+        a {
+            color: #0000ee;
+            text-decoration: underline;
+        }
+
+        a:visited {
+            color: #551a8b;
+        }
+
+        a:hover {
+            background: #ffff00;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <!-- Main Window -->
+        <div class="window main-window">
+            <!-- Title Bar -->
+            <div class="window-title-bar">
+                <div class="window-controls">
+                    <div class="window-control close-btn" title="Close"></div>
+                    <div class="window-control minimize-btn" title="Minimize"></div>
+                    <div class="window-control zoom-btn" title="Zoom"></div>
+                </div>
+                iMac G3 Heaven - Classic Mac Interface
+            </div>
+
+            <!-- Menu Bar -->
+            <div class="menu-bar">
+                <span class="menu-item">File</span>
+                <span class="menu-item">Edit</span>
+                <span class="menu-item">View</span>
+                <span class="menu-item">Special</span>
+                <span class="menu-item">Help</span>
+            </div>
+
+            <!-- Window Content -->
+            <div class="window-content">
+                <!-- Color Palette Selector -->
+                <div class="groupbox">
+                    <div class="groupbox-title">iMac G3 Color Collection</div>
+                    <div class="color-palette">
+                        <div class="color-swatch bondi-blue" title="Bondi Blue" onclick="changeTheme('bondi')"></div>
+                        <div class="color-swatch strawberry" title="Strawberry" onclick="changeTheme('strawberry')"></div>
+                        <div class="color-swatch lime" title="Lime" onclick="changeTheme('lime')"></div>
+                        <div class="color-swatch tangerine" title="Tangerine" onclick="changeTheme('tangerine')"></div>
+                        <div class="color-swatch grape" title="Grape" onclick="changeTheme('grape')"></div>
+                        <div class="color-swatch blueberry" title="Blueberry" onclick="changeTheme('blueberry')"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="content-area">
+                    <!-- Sidebar -->
+                    <div class="sidebar">
+                        <!-- System Info -->
+                        <div class="groupbox">
+                            <div class="groupbox-title">System Info</div>
+                            <div class="text-display">
+Computer: iMac G3
+System: Mac OS 9.2.2
+Memory: 512 MB
+Processor: PowerPC G3
+Hard Disk: 40 GB
+CD-ROM: 24x Speed
+Network: Built-in Ethernet
+                            </div>
+                        </div>
+
+                        <!-- Available Colors -->
+                        <div class="groupbox">
+                            <div class="groupbox-title">Color Variants</div>
+                            <div class="mac-list">
+                                <div class="mac-list-item">Bondi Blue (Original)</div>
+                                <div class="mac-list-item">Strawberry</div>
+                                <div class="mac-list-item">Lime</div>
+                                <div class="mac-list-item">Tangerine</div>
+                                <div class="mac-list-item">Grape</div>
+                                <div class="mac-list-item">Blueberry</div>
+                                <div class="mac-list-item">Graphite</div>
+                                <div class="mac-list-item">Ruby</div>
+                                <div class="mac-list-item">Sage</div>
+                                <div class="mac-list-item">Snow</div>
+                                <div class="mac-list-item">Indigo</div>
+                                <div class="mac-list-item">Dalmatian</div>
+                                <div class="mac-list-item">Blue Dalmatian</div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Links -->
+                        <div class="groupbox">
+                            <div class="groupbox-title">Quick Access</div>
+                            <button class="mac-button" style="width: 100%; margin: 2px 0;">Technical Specs</button>
+                            <button class="mac-button" style="width: 100%; margin: 2px 0;">Photo Gallery</button>
+                            <button class="mac-button" style="width: 100%; margin: 2px 0;">Repair Manual</button>
+                            <button class="mac-button default" style="width: 100%; margin: 2px 0;">Download Software</button>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <!-- Tabbed Interface -->
+                        <div class="window">
+                            <div class="tab-strip">
+                                <div class="tab active" onclick="openTab(event, 'overview')">Overview</div>
+                                <div class="tab" onclick="openTab(event, 'gallery')">Gallery</div>
+                                <div class="tab" onclick="openTab(event, 'specs')">Specifications</div>
+                                <div class="tab" onclick="openTab(event, 'history')">History</div>
+                            </div>
+
+                            <div class="window-content">
+                                <!-- Overview Tab -->
+                                <div id="overview" class="tab-content" style="display: block;">
+                                    <div class="alert-box">
+                                        <div class="alert-icon">!</div>
+                                        <div>
+                                            <strong>Welcome to iMac G3 Heaven!</strong><br>
+                                            Experience the revolutionary translucent computing that changed the world in 1998.
+                                        </div>
+                                    </div>
+
+                                    <div class="groupbox">
+                                        <div class="groupbox-title">About the iMac G3</div>
+                                        <p>The iMac G3 was Apple's breakthrough all-in-one computer that single-handedly saved the company from bankruptcy. Released in August 1998, it featured groundbreaking translucent design in vibrant colors that made technology friendly and approachable.</p>
+                                        
+                                        <div class="progress-container">
+                                            <div class="progress-bar"></div>
+                                        </div>
+                                        <div style="text-align: center; font-size: 10px; margin-top: 4px;">
+                                            Loading iMac legacy data<span class="loading-dots"></span>
+                                        </div>
+
+                                        <p style="margin-top: 12px;">Steve Jobs famously said the iMac would be "the computer for the rest of us" - and it delivered on that promise with unprecedented ease of use and stunning visual appeal.</p>
+                                    </div>
+
+                                    <div class="groupbox">
+                                        <div class="groupbox-title">Key Features</div>
+                                        <div class="mac-list">
+                                            <div class="mac-list-item">PowerPC G3 processor (233MHz - 700MHz)</div>
+                                            <div class="mac-list-item">All-in-one translucent design</div>
+                                            <div class="mac-list-item">Built-in CRT display (15 inches)</div>
+                                            <div class="mac-list-item">USB connectivity (industry first)</div>
+                                            <div class="mac-list-item">Built-in Ethernet networking</div>
+                                            <div class="mac-list-item">CD-ROM / DVD drive options</div>
+                                            <div class="mac-list-item">56K modem included</div>
+                                            <div class="mac-list-item">Available in 13 stunning colors</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gallery Tab -->
+                                <div id="gallery" class="tab-content" style="display: none;">
+                                    <div class="groupbox">
+                                        <div class="groupbox-title">iMac G3 Color Collection</div>
+                                        <div class="icon-grid">
+                                            <div class="icon-item">
+                                                <div class="icon bondi-blue">BONDI<br>BLUE</div>
+                                                <div class="icon-label">Original 1998</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon strawberry">STRAW<br>BERRY</div>
+                                                <div class="icon-label">Fruit Series</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon lime">LIME</div>
+                                                <div class="icon-label">Citrus Fresh</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon tangerine">TANG<br>ERINE</div>
+                                                <div class="icon-label">Sunset Orange</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon grape">GRAPE</div>
+                                                <div class="icon-label">Deep Purple</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon blueberry">BLUE<br>BERRY</div>
+                                                <div class="icon-label">Berry Bright</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon" style="background: linear-gradient(135deg, #666, #999);">GRAPH<br>ITE</div>
+                                                <div class="icon-label">Professional</div>
+                                            </div>
+                                            <div class="icon-item">
+                                                <div class="icon" style="background: linear-gradient(135deg, #cc0000, #ff3333);">RUBY</div>
+                                                <div class="icon-label">Jewel Tone</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-display">
+Click on any color above to view detailed information about that iMac G3 variant. Each color represented a breakthrough in consumer electronics design, making technology personal and expressive.
+
+The translucent plastics weren't just aesthetic - they communicated Apple's philosophy of transparency and approachability in computing.
+                                    </div>
+                                </div>
+
+                                <!-- Specs Tab -->
+                                <div id="specs" class="tab-content" style="display: none;">
+                                    <div class="scrollable">
+                                        <div class="groupbox">
+                                            <div class="groupbox-title">Technical Specifications</div>
+                                            <strong>Processor:</strong> PowerPC G3 (233MHz to 700MHz)<br>
+                                            <strong>Memory:</strong> 32MB to 1GB SDRAM<br>
+                                            <strong>Storage:</strong> 4GB to 128GB IDE hard drive<br>
+                                            <strong>Display:</strong> 15" CRT, 1024x768 resolution<br>
+                                            <strong>Graphics:</strong> ATI Rage or NVIDIA GeForce<br>
+                                            <strong>Audio:</strong> Built-in stereo speakers<br>
+                                            <strong>Networking:</strong> 10/100 Ethernet, 56K modem<br>
+                                            <strong>Ports:</strong> 2x USB 1.1, headphone jack<br>
+                                            <strong>Expansion:</strong> RAM slots, AirPort optional<br>
+                                            <strong>OS Support:</strong> Mac OS 8.1 through Mac OS X 10.3<br>
+                                        </div>
+
+                                        <div class="groupbox">
+                                            <div class="groupbox-title">Model Variations</div>
+                                            <strong>Rev A (1998):</strong> 233MHz G3, tray-loading CD<br>
+                                            <strong>Rev B (1999):</strong> 266MHz G3, improved graphics<br>
+                                            <strong>Rev C (1999):</strong> 333MHz G3, slot-loading CD<br>
+                                            <strong>Rev D (2000):</strong> 350-450MHz G3, DVD support<br>
+                                            <strong>Rev E (2001):</strong> 500-700MHz G3, final revision<br>
+                                        </div>
+
+                                        <div class="groupbox">
+                                            <div class="groupbox-title">Color Timeline</div>
+                                            <strong>August 1998:</strong> Bondi Blue launch<br>
+                                            <strong>January 1999:</strong> 5 new flavors (Fruit series)<br>
+                                            <strong>October 1999:</strong> Slot-loading models<br>
+                                            <strong>July 2000:</strong> Final color updates<br>
+                                            <strong>March 2001:</strong> Production discontinued<br>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- History Tab -->
+                                <div id="history" class="tab-content" style="display: none;">
+                                    <div class="groupbox">
+                                        <div class="groupbox-title">The Story Behind the Revolution</div>
+                                        <p>In 1997, Apple was 90 days from bankruptcy. Steve Jobs had recently returned as interim CEO, and the company desperately needed a hit product. The result was Project C1 - what would become the iMac.</p>
+                                        
+                                        <p>Jonathan Ive's design team took inspiration from everything around them: LifeSaver candies, kitchen appliances, even bathroom fixtures. The goal was simple - make the computer friendly, not intimidating.</p>
+                                    </div>
+
+                                    <div class="alert-box">
+                                        <div class="alert-icon">💡</div>
+                                        <div>
+                                            <strong>Design Philosophy:</strong> "The back of our computer looks better than the front of anyone else's." - Jonathan Ive
+                                        </div>
+                                    </div>
+
+                                    <div class="text-display">
+The iMac's impact extended far beyond computing:
+
+• First mass-market computer to eliminate floppy drives
+• Popularized USB as the standard connection
+• Influenced industrial design across all product categories
+• Saved Apple from bankruptcy with 278,000 units sold in first quarter
+• Created the template for future Apple successes (iPod, iPhone, iPad)
+
+The translucent aesthetic became so popular that everything from kitchen appliances to automobiles adopted similar design languages.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Controls -->
+                        <div class="groupbox" style="margin-top: 12px;">
+                            <div class="groupbox-title">Actions</div>
+                            <button class="mac-button default" onclick="showAlert()">About this iMac</button>
+                            <button class="mac-button" onclick="showSpecs()">System Profiler</button>
+                            <button class="mac-button" onclick="openGallery()">Photo Album</button>
+                            <button class="mac-button" onclick="visitApple()">Visit Apple.com</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span>Status: Ready | iMac G3 Heaven v1.0</span>
+                <span>Memory: 512MB Available</span>
+            </div>
+        </div>
+
+        <!-- About Dialog (Hidden) -->
+        <div id="about-dialog" class="window" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 1000;">
+            <div class="window-title-bar">
+                <div class="window-controls">
+                    <div class="window-control close-btn" onclick="closeDialog()" title="Close"></div>
+                </div>
+                About iMac G3 Heaven
+            </div>
+            <div class="window-content">
+                <div style="text-align: center; padding: 20px;">
+                    <div class="icon" style="width: 64px; height: 64px; margin: 0 auto 12px; font-size: 12px;">
+                        iMAC<br>G3
+                    </div>
+                    <strong>iMac G3 Heaven</strong><br>
+                    Version 1.0<br>
+                    <br>
+                    A tribute to Apple's revolutionary<br>
+                    translucent computing platform<br>
+                    <br>
+                    Built with classic Mac OS interface elements<br>
+                    <br>
+                    <button class="mac-button default" onclick="closeDialog()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Theme changer - updates the main background gradient
+        function changeTheme(color) {
+            const themes = {
+                bondi: 'linear-gradient(180deg, #e6f3ff 0%, #cce6ff 25%, #b3d9ff 50%, #99ccff 75%, #80bfff 100%)',
+                strawberry: 'linear-gradient(180deg, #ffe6f0 0%, #ffcce0 25%, #ffb3d0 50%, #ff99c0 75%, #ff80b0 100%)',
+                lime: 'linear-gradient(180deg, #f0ffe6 0%, #e6ffcc 25%, #d9ffb3 50%, #ccff99 75%, #bfff80 100%)',
+                tangerine: 'linear-gradient(180deg, #fff3e6 0%, #ffe6cc 25%, #ffd9b3 50%, #ffcc99 75%, #ffbf80 100%)',
+                grape: 'linear-gradient(180deg, #f3e6ff 0%, #e6ccff 25%, #d9b3ff 50%, #cc99ff 75%, #bf80ff 100%)',
+                blueberry: 'linear-gradient(180deg, #e6eeff 0%, #ccddff 25%, #b3ccff 50%, #99bbff 75%, #80aaff 100%)'
+            };
+            
+            document.body.style.background = themes[color] || themes.bondi;
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+
+        // Dialog functions
+        function showAlert() {
+            document.getElementById('about-dialog').style.display = 'block';
+        }
+
+        function closeDialog() {
+            document.getElementById('about-dialog').style.display = 'none';
+        }
+
+        function showSpecs() {
+            openTab({currentTarget: document.querySelector('.tab:nth-child(3)')}, 'specs');
+        }
+
+        function openGallery() {
+            openTab({currentTarget: document.querySelector('.tab:nth-child(2)')}, 'gallery');
+        }
+
+        function visitApple() {
+            // Classic Mac dialog behavior
+            if (confirm('This will open Apple.com in your web browser. Continue?')) {
+                window.open('https://www.apple.com', '_blank');
+            }
+        }
+
+        // Add classic Mac sound simulation (visual feedback)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('mac-button') || 
+                e.target.classList.contains('tab') ||
+                e.target.classList.contains('mac-list-item')) {
+                
+                // Brief visual feedback
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 100);
+            }
+        });
+
+        // Classic Mac cursor effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to interactive elements
+            const interactiveElements = document.querySelectorAll('.mac-button, .tab, .mac-list-item, .color-swatch, .icon-item');
+            
+            interactiveElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    this.style.cursor = 'pointer';
+                });
+                
+                element.addEventListener('mouseleave', function() {
+                    this.style.cursor = 'default';
+                });
+            });
+
+            // Auto-select first tab
+            if (document.querySelector('.tab.active')) {
+                document.getElementById('overview').style.display = 'block';
+            }
+        });
+
+        // Classic Mac window behavior
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        // Add classic "loading" states
+        function simulateLoading(button) {
+            const originalText = button.textContent;
+            button.textContent = 'Loading...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 1500);
+        }
+
+        // Add to button clicks
+        document.querySelectorAll('.mac-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.onclick) {
+                    simulateLoading(this);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
